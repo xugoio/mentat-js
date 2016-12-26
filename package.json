@@ -1,0 +1,19 @@
+{
+  "name": "mentat-js",
+  "version": "0.0.0",
+  "description": "MVC JS Framework",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xugoio/mentat-js.git"
+  },
+  "author": "Alexandre Raffy <alex@xugo.io>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/xugoio/mentat-js/issues"
+  },
+  "homepage": "https://github.com/xugoio/mentat-js"
+}
