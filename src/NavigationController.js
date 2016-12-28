@@ -1,19 +1,19 @@
-MentatJS.NavigationController = class {
+MentatJS.NavigationController = Class.extend({
 
-    id =  'UINavigationController.instance';
-    rootView =  null;
-    viewControllers = [];
+    id :  'UINavigationController.instance',
+    rootView :  null,
+    viewControllers : [],
 
 
 
-    initNavigationControllerWithRootView (_id,_rootView) {
+    initNavigationControllerWithRootView : function (_id,_rootView) {
         this.id = _id;
         this.rootView = _rootView;
         this.viewControllers = new Array();
-    }
+    },
 
 
-    loadViewController ( vcID, arrayOfFilesToDownload, delegate ) {
+    loadViewController : function ( vcID, arrayOfFilesToDownload, delegate ) {
 
         var downloadStack = {
             vcID: vcID,
@@ -22,7 +22,7 @@ MentatJS.NavigationController = class {
             navigationController: this,
             delegate: delegate
         }
-        var stackIndex = MentatJS.Application.intance.downloadStack.push(downloadStack);
+        var stackIndex = MentatJS.Application.instance.downloadStack.push(downloadStack);
 
         for ( var i = 0; i < arrayOfFilesToDownload.length; i++ ) {
             
@@ -41,9 +41,10 @@ MentatJS.NavigationController = class {
         if (downloadStack.counter==0) {
             this._initViewController(downloadStack);
         }
-    }
+    },
 
-    _initViewController (stack) {
+
+    _initViewController : function (stack) {
         var newVC = null;
         eval('newVC = new ' + stack.vcID + "();");
         if (newVC==null) {
@@ -57,29 +58,10 @@ MentatJS.NavigationController = class {
         this.viewControllers.push(newVC);
         stack.delegate.viewControllerWasLoadedSuccessfully (newVC);
         stack = { vcID: '', counter: 0, files:[], delegate: null};
-    }
+    },
 
-    dataWasDownloaded (dataID, data) {
-        //try {
-        console.log(dataID);
-        eval(data);
-        for (var i = 0; i < this.stacks.length; i++) {
-            for ( var j = 0; j < this.stacks[i].files.length; j++) {
-                if (this.stacks[i].files[j] == dataID) {
-                    if (!this.cache.contains(dataID)) {
-                        this.cache.push(dataID);
-                    }
-                    this.stacks[i].counter--;
-                    if (this.stacks[i].counter==0) {
-                        this._initViewController(this.stacks[i]);
-                    }
-                }
-            }
 
-        }
-    }
-
-    removeViewController (vcToRemove) {
+    removeViewController : function (vcToRemove) {
         console.log('-VC '+ vcToRemove.id);
 
         if (vcToRemove.view!=null) {
@@ -98,10 +80,10 @@ MentatJS.NavigationController = class {
                 i = 0;
             }
         }
-    }
+    },
 
 
-    present ( vc, options) {
+    present : function ( vc, options) {
 
         var opts = {
             animated: options.animated | false,
@@ -199,10 +181,10 @@ MentatJS.NavigationController = class {
             this.animation.pushAnimationKey(animKey);
         }
         this.animation.startPlaying();
-    }
+    },
 
 
-    animationDidFinish (id) {
+    animationDidFinish : function (id) {
         this.animation = null;
         var vc = null;
         var i = 0;
@@ -224,4 +206,4 @@ MentatJS.NavigationController = class {
 
 
 
-};
+});

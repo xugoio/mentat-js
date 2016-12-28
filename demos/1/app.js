@@ -8,19 +8,19 @@ window.onload = function () {
 
 
 
-class MyApp extends MentatJS.Application {
+MyApp = MentatJS.Application.extend ({
 
-    applicationWillStart () {
+    applicationWillStart : function () {
         this.navigationController.loadViewController('MyViewController',
         [
             { id: 'MyView', uri:'myView.js'},
             { id : "MyViewController", uri:'myViewController.js'}
         ], this);
 
-    }
+    },
 
-    viewControllerWasLoadedSuccessfully (vc) {
+    viewControllerWasLoadedSuccessfully : function (vc) {
         this.navigationController.present(vc, {animated: false});
     }
 
-};
+});

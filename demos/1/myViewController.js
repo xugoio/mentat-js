@@ -1,18 +1,14 @@
 MentatJS.declare ("MyViewController", function () {
-    "use strict";
 
-    class MyViewController extends MentatJS.ViewController {
+
+    MyViewController = MentatJS.ViewController.extend ({
 
         viewForViewController () {
             return new MyView();
         }
 
-
-
-
-
-
-    };
+        
+    });
 
 
 });

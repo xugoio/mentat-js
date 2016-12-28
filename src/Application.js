@@ -1,40 +1,41 @@
-MentatJS.Application = class {
+MentatJS.Application = Class.extend ({
 
-    navigationController = null;
-    notifications = null;
-    appName = "";
-    rootView = null;
-    downloadStack = null;
-    downloadCache = null;
+    navigationController : null,
+    notifications : [],
+    appName : '',
+    rootView : null,
+    downloadStack : null,
+    downloadCache : null,
+    
 
-    constructor(options) {
+    resetNotification : function ()  {
+        this.notifications = new Array();
+    },
+
+
+    wipeAndReload : function () {
+        window.location.href = '/';
+        return;
+    },
+
+
+    launch : function  () {
+        this.navigationController = null;
+        this.appName = "";
+        this.rootView = null;
         this.notifications = new Array();
         this.downloadStack = new Array();
         this.downloadCache = new Array();
 
-    }
-
-    resetNotification ()  {
-        this.notifications = new Array();
-    }
-
-
-    wipeAndReload () {
-        window.location.href = '/';
-        return;
-    }
-
-
-    launch () {
-        this.navigationControllerDeclaration = class navigationControllerDeclaration extends MentatJS.UINavigationController {
+        this.navigationControllerDeclaration = MentatJS.NavigationController.extend({
             willInit () {
 
             }
-        };
+        });
 
 
         // desktop
-        this.viewDeclaration = class viewDeclaration extends MentatJS.UIView {
+        this.viewDeclaration = MentatJS.View.extend({
 
             boundsForView (parentBounds,oldBounds) {
                 var bounds =
@@ -49,15 +50,15 @@ MentatJS.Application = class {
 
                 var bd = BrowsingDevice();
                 if (bd.mobile!=0) {
-                    bounds.width = 1024;
-                    bounds.height = 750;
+                    bounds.width = document.documentElement.clientWidth;
+                    bounds.height = document.documentElement.clientHeight;
                 }
 
                 return bounds;
 
             }
 
-        };
+        });
         this.navigationController = new this.navigationControllerDeclaration();
         this.rootView = new this.viewDeclaration();
         this.navigationController.initNavigationControllerWithRootView('UINavigationController.instance',this.rootView);
@@ -66,13 +67,13 @@ MentatJS.Application = class {
         document.getElementsByTagName('body')[0].appendChild(this.navigationController.rootView.getDiv());
         MentatJS.Application.instance = this;
         this.applicationWillStart();
-    }
+    },
 
-    applicationWillStart () {
+    applicationWillStart : function () {
         throw 'Application.applicationWillStart must be overridden.';
-    }
+    },
 
-    deregisterForNotification (notification,obj_id) {
+    deregisterForNotification : function (notification,obj_id) {
         var idx = -1;
         console.log('-REG ' + obj_id + '.' + notification);
         for (var i = 0; i < this.notifications.length; i++) {
@@ -82,16 +83,16 @@ MentatJS.Application = class {
         if (idx > -1) {
             this.notifications.splice(idx, 1);
         }
-    }
+    },
 
 
-    registerForNotification (notification, obj) {
+    registerForNotification : function (notification, obj) {
         var not = { notification: notification, target: obj};
         console.log ('+REG ' + obj.id + '.' + notification);
         this.notifications.push(not);
-    }
+    },
 
-    notifyAll (sender,notification,param) {
+    notifyAll : function (sender,notification,param) {
         console.log('+EV ' + notification);
         for (var i = 0; i < this.notifications.length; i++) {
             if (this.notifications[i].notification == notification) {
@@ -103,5 +104,5 @@ MentatJS.Application = class {
 
 
 
-};
+});
 

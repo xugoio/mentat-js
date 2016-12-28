@@ -1,21 +1,21 @@
 
 
 
-MentatJS.ViewAnimationKey = class {
-    view =  null;
-    easingFunction= MentatJS.Easing.easeLinear;
-    duration= 300;
-    transform= 'translateX';
-    startValue= 0;
-    endValue= 0;
-    direction= 1;
-    offset= 0;
+MentatJS.ViewAnimationKey = Class.extend({
+    view : null,
+    easingFunction : MentatJS.Easing.easeLinear,
+    duration : 300,
+    transform : 'translateX',
+    startValue : 0,
+    endValue : 0,
+    direction : 1,
+    offset : 0,
 
-    executeOnStart  () {
+    executeOnStart : function  () {
 
-    }
+    },
 
-    drawFrame (x) {
+    drawFrame : function (x) {
         var newposition = this.startValue + this.direction * ((this.endValue - this.startValue) * x);
         if (this.startValue>this.endValue) {
             newposition = this.startValue + this.direction * ((this.startValue - this.endValue) * x);
@@ -25,33 +25,33 @@ MentatJS.ViewAnimationKey = class {
     }
 
 
-};
+});
 
 
 
 
-MentatJS.Animation = class {
-    id = '';
-    keys = [];
-    activeKeys =  [];
-    delegate = null;
+MentatJS.Animation = Class.extend({
+    id : '',
+    keys : null,
+    activeKeys : null,
+    delegate : null,
 
-    initWithDelegate (_id, _delegate) {
+    initWithDelegate : function (_id, _delegate) {
         this.id = _id;
         this.delegate = _delegate;
         this.keys = new Array();
         this.activeKeys = new Array();
-    }
+    },
 
 
-    pushAnimationKey (viewAnimation) {
+    pushAnimationKey : function (viewAnimation) {
         if (this.keys['key' + viewAnimation.offset] == undefined) {
             this.keys['key' + viewAnimation.offset] = [];
         }
         this.keys['key' + viewAnimation.offset].push(viewAnimation);
-    }
+    },
 
-    startPlaying () {
+    startPlaying : function () {
 
         this.activeKeys = [];
         this.stopping = false;
@@ -101,10 +101,10 @@ MentatJS.Animation = class {
         }
 
         this.animate();
-    }
+    },
 
 
-    animate () {
+    animate : function () {
         var ptr = this;
         this.now = window.performance.now();
         this.elapsed = this.now - this.then;
@@ -134,9 +134,9 @@ MentatJS.Animation = class {
         requestAnimationFrame(function () {
             ptr.animate();
         });
-    }
+    },
 
-    drawFrame () {
+    drawFrame : function () {
         for ( var i = 0; i < this.activeKeys.length; i++) {
             var k = this.activeKeys[i];
             var expectedEnd = Math.floor(this.startTime + k.offset + k.duration );
@@ -158,5 +158,5 @@ MentatJS.Animation = class {
 
     }
     
-};
+});
 

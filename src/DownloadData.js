@@ -108,15 +108,15 @@ MentatJS.PutDataWithDelegate = function (dataID, uri, putData, delegate) {
 
 
 MentatJS.LoadScript = function (dataID, uri) {
-    "use strict";
 
-    var str = "<script type=\"text/javascript\" src=\"" + uri + "\"></script>";
-    window.top.document.write(str);
+    var tag = document.createElement("script");
+    tag.src = uri;
+    document.getElementsByTagName("head")[0].appendChild(tag);
 
 };
 
 MentatJS.declare = function (scriptID, fn) {
-    "use strict";
+
     fn();
     MentatJS.Application.instance.downloadCache.push(scriptID);
 

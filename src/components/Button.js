@@ -4,19 +4,19 @@
 MentatJS.defaults.buttonDefaultTint = MentatJS.tints.kBlueTint;
 
 
-MentatJS.Button = class Button extends MentatJS.View {
+MentatJS.Button = MentatJS.View.extend({
 
-    text = '';
-    buttonElem = null;
-    action = null;
-    isToggle = false;
-    isEnabled = true;
-    isToggled = false;
-    innerText = '';
-    tint = MentatJS.defaults.buttonDefaultTint;
-    oldTint = MentatJS.defaults.buttonDefaultTint;
+    text : '',
+    buttonElem : null,
+    action : null,
+    isToggle : false,
+    isEnabled : true,
+    isToggled : false,
+    innerText : '',
+    tint : MentatJS.defaults.buttonDefaultTint,
+    oldTint : MentatJS.defaults.buttonDefaultTint,
 
-    initView (id) {
+    initView : function (id) {
         this.id = id;
         this._div = document.createElement('div');
 
@@ -50,11 +50,11 @@ MentatJS.Button = class Button extends MentatJS.View {
 
         }
 
-    }
+    },
 
 
 
-    doResize () {
+    doResize : function () {
         if (this.viewWillResize != null) {
             throw Error('viewWillResize is not compatible.');
         };
@@ -77,17 +77,17 @@ MentatJS.Button = class Button extends MentatJS.View {
         for (var i = 0; i < this.subViews.length; i++) {
             this.subViews[i].doResize();
         }
-    }
+    },
 
 
 
 
-    setText (_txt) {
+    setText : function (_txt) {
         this.text = _txt;
         this._div.innerHTML = this.text;
-    }
+    },
 
-    setToggled (t) {
+    setToggled : function (t) {
         if (t==true) {
             this.isToggled = true;
             this._div.style.background = this.tint.toggled;
@@ -99,10 +99,10 @@ MentatJS.Button = class Button extends MentatJS.View {
             this._div.style.color = this.tint.text;
             this._div.style.border = '1px solid ' + this.tint.normal;
         }
-    }
+    },
 
 
-    onEnableStatusChanged (e) {
+    onEnableStatusChanged : function (e) {
         if (e == false) {
             this.isEnabled=false;
             if ((this.isToggle) && (this.isToggled) ) {
@@ -133,9 +133,9 @@ MentatJS.Button = class Button extends MentatJS.View {
             var ptr = this;
             addListener(this._div, 'click', this.onClickEvent);
         }
-    }
+    },
 
-    viewWasAttached () {
+    viewWasAttached : function () {
 
         var ptr = this;
         this.doResize();
@@ -188,10 +188,10 @@ MentatJS.Button = class Button extends MentatJS.View {
                 }
             }
         });
-    }
+    },
 
 
-    flash (callback) {
+    flash : function (callback) {
 
         var ptr = this;
         this.getDiv().style.backgroundColor = ptr.tint.hover; //'#A1C8FC';
@@ -216,4 +216,4 @@ MentatJS.Button = class Button extends MentatJS.View {
 
 
 
-};
+});

@@ -3,45 +3,46 @@
 
 
 
-MentatJS.UIViewController = class {
+MentatJS.ViewController = Class.extend({
 
-    id = '';
-    view = null;
-    navigationController = null;
+    id : '',
+    view : null,
+    navigationController : null,
 
-    initViewController (_id) {
+    initViewController : function (_id) {
         this.id = _id;
         this.view = this.viewForViewController();
         this.view.viewController = this;
         this.view.navigationController = this.navigationController;
         this.view.initView(this.id + ".view");
-    }
+    },
 
-    viewControllerDidLoad () {
+    viewControllerDidLoad : function () {
 
-    }
-    viewControllerWillBeDestroyed () {
+    },
 
-    }
+    viewControllerWillBeDestroyed : function () {
+
+    },
 
 
-    viewForViewController  () {
+    viewForViewController : function  () {
         var v = new MentatJS.View();
         v.boundsForView = function (parentBounds,oldBounds) {
             return parentBounds;
         };
         return v;
+    },
+
+
+    viewWillBePresented : function (parentBounds) {
+
+    },
+
+
+    viewWasPresented : function() {
+
     }
 
 
-    viewWillBePresented (parentBounds) {
-
-    }
-
-
-    viewWasPresented () {
-
-    }
-
-
-};
+});

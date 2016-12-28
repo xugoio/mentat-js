@@ -1,81 +1,81 @@
 
 
 
-MentatJS.UIView = class {
+MentatJS.View = Class.extend({
 
-    id = '';
-    NO_RESIZE = false;
-    actionDelegate = null;
-    actionDelegateEventName = '';
-    viewController = null;
-    navigationController = null;
+    id : '',
+    NO_RESIZE : false,
+    actionDelegate : null,
+    actionDelegateEventName : '',
+    viewController : null,
+    navigationController : null,
 
-    bounds =  null;
+    bounds :  null,
 
-    oldBounds =  {
+    oldBounds :  {
         x: 0,
         y: 0,
         width: 100,
         height: 100,
         unit: 'px',
         position: 'absolute'
-    };
+    },
 
-    parentView =  null;
-    subViews = null;
+    parentView :  null,
+    subViews : null,
 
-    _div = null;
+    _div : null,
 
-    setActionDelegate (d,n) {
+    setActionDelegate : function (d,n) {
         this.actionDelegate = d;
         this.actionDelegateEventName = n;
         var ptr = this;
-    }
+    },
 
-    setEnabled (e) {
+    setEnabled : function (e) {
         if (this.onEnableStatusChanged!=null) {
             this.onEnableStatusChanged(e);
         }
-    }
+    },
 
-    getDiv () {
+    getDiv : function () {
         return this._div;
-    }
+    },
 
-    setVisible (b) {
+    setVisible : function (b) {
         var div = this.getDiv();
         if (div != undefined) {
             div.style.display = (b == true) ? 'block' : 'none';
         }
-    }
+    },
 
 
-    boundsForView (parentBounds,oldBounds) {
+    boundsForView : function (parentBounds,oldBounds) {
         return null;
-    }
+    },
 
 
-    viewWillLoad () {
+    viewWillLoad : function () {
 
-    }
+    },
 
-    viewDidLoad () {
+    viewDidLoad : function () {
 
-    }
+    },
 
-    viewWasAttached () {
+    viewWasAttached : function () {
 
-    }
+    },
 
-    setLayerHeight (z) {
+    setLayerHeight : function (z) {
         this.getDiv().style.zIndex = z;
-    }
+    },
 
-    setOpacity (o) {
+    setOpacity : function (o) {
         this.getDiv().style.opacity = o;
-    }
+    },
 
-    doResize () {
+    doResize : function () {
         if (this.viewWillResize != null) {
             throw Error('viewWillResize is not compatible.');
         };
@@ -98,12 +98,12 @@ MentatJS.UIView = class {
         for (var i = 0; i < this.subViews.length; i++) {
             this.subViews[i].doResize();
         }
-    }
+    },
 
 
 
 
-    resize (bounds) {
+    resize : function (bounds) {
 
         if (this._div != undefined) {
             this._div.style.position = bounds.position;
@@ -114,10 +114,10 @@ MentatJS.UIView = class {
             this._div.style.width = bounds.width + bounds.unit;
             this._div.style.height = bounds.height + bounds.unit;
         }
-    }
+    },
 
 
-    initView (_id) {
+    initView : function (_id) {
         // set the id
         this.id = _id;
         this._div = document.createElement('div');
@@ -142,10 +142,10 @@ MentatJS.UIView = class {
             }
         }
 
-    }
+    },
 
 
-    attach (view) {
+    attach : function (view) {
         if (this.subViews==null) this.subViews = new Array();
         this.subViews.push(view);
         if (this.getDiv() != undefined) {
@@ -158,9 +158,9 @@ MentatJS.UIView = class {
         if (view.viewWasAttached != null) {
             view.viewWasAttached(this);
         }
-    }
+    },
 
-    detachAllChildren () {
+    detachAllChildren : function () {
         if (this.subViews==null) this.subViews = new Array();
         if (this.getDiv() != undefined) {
             while ( this.getDiv().childNodes.length>0) {
@@ -168,12 +168,12 @@ MentatJS.UIView = class {
             }
 
         }
-    }
+    },
 
 
 
 
-    flashColor (callback) {
+    flashColor : function(callback) {
 
         var ptr = this;
         var color = this.getDiv().style.color || '#000000';
@@ -190,10 +190,10 @@ MentatJS.UIView = class {
                 },50);
             },50);
         },50);
-    }
+    },
 
 
-    flash (callback) {
+    flash : function (callback) {
 
         var ptr = this;
         var backgroundColor = this.getDiv().style.backgroundColor || '#FFFFFF';
@@ -211,10 +211,10 @@ MentatJS.UIView = class {
             },50);
 
         },50);
-    }
+    },
 
 
-    flashTarget (target,callback) {
+    flashTarget : function (target,callback) {
         var ptr2 = this;
         var backgroundColor = target.style.backgroundColor || '#FFFFFF';
         target.style.backgroundColor = '#A1C8FC';
@@ -231,24 +231,24 @@ MentatJS.UIView = class {
             },50);
 
         },50);
-    }
+    },
 
-    fade2Black () {
+    fade2Black : function () {
         var ptr2 = this;
         this.getDiv().style.transition = 'opacity .75s ease-in-out';
         this.getDiv().style.opacity = 0.0;
         this.getDiv().style.backgroundColor = 'black';
-    }
+    },
 
-    fadeOut () {
+    fadeOut : function () {
         this.getDiv().style.transition = 'opacity .75s ease-in-out';
         this.getDiv().style.opacity = 1.0;
         this.getDiv().style.backgroundColor = 'white';
-    }
+    },
 
 
 
-    findViewNamed (name) {
+    findViewNamed : function (name) {
         if (this.id == name)
             return this;
         for (var i = 0; i < this.subViews.length; i++) {
@@ -256,10 +256,10 @@ MentatJS.UIView = class {
             if (ret!=null) return ret;
         }
         return null;
-    }
+    },
 
 
-    detach (name) {
+    detach : function (name) {
         console.log('detaching '+name+' from ' + this.id);
         var idx = -1;
         for (var i = 0; i < this.subViews.length; i++) {
@@ -284,9 +284,9 @@ MentatJS.UIView = class {
         }
         console.dir(this.subViews);
         console.log('end detach');
-    }
+    },
 
-    detachItSelf () {
+    detachItSelf : function () {
         if (this.parent!=null) {
             this.parent.detach(this.id);
         } else {
@@ -296,4 +296,4 @@ MentatJS.UIView = class {
 
 
 
-};
+});
