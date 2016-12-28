@@ -1,3 +1,18 @@
-/**
- * Created by alex on 27/12/2016.
- */
+MentatJS.declare ("MyViewController", function () {
+    "use strict";
+
+    class MyViewController extends MentatJS.ViewController {
+
+        viewForViewController () {
+            return new MyView();
+        }
+
+
+
+
+
+
+    };
+
+
+});

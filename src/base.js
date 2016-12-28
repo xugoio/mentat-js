@@ -1,6 +1,8 @@
+'use strict';
 
-MentatJS = {
-    version: "0.0.1"
+var MentatJS = {
+    version: "0.0.1",
+    defaults: {}
 };
 
 

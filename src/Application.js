@@ -1,12 +1,16 @@
-MentatJS.Application = class Application {
+MentatJS.Application = class {
 
     navigationController = null;
     notifications = null;
     appName = "";
     rootView = null;
+    downloadStack = null;
+    downloadCache = null;
 
     constructor(options) {
         this.notifications = new Array();
+        this.downloadStack = new Array();
+        this.downloadCache = new Array();
 
     }
 
@@ -16,17 +20,12 @@ MentatJS.Application = class Application {
 
 
     wipeAndReload () {
-
-
         window.location.href = '/';
         return;
-
     }
 
 
     launch () {
-        // create the root View
-        this.notifications = new Array();
         this.navigationControllerDeclaration = class navigationControllerDeclaration extends MentatJS.UINavigationController {
             willInit () {
 
@@ -65,13 +64,12 @@ MentatJS.Application = class Application {
         this.navigationController.rootView.initView('rootView');
         this.navigationController.rootView.doResize();
         document.getElementsByTagName('body')[0].appendChild(this.navigationController.rootView.getDiv());
+        MentatJS.Application.instance = this;
         this.applicationWillStart();
     }
 
     applicationWillStart () {
-
         throw 'Application.applicationWillStart must be overridden.';
-
     }
 
     deregisterForNotification (notification,obj_id) {
