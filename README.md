@@ -133,8 +133,8 @@ you can call the navigation controller on a view controller to load a different 
 onButtonClicked: function (sender) {
     this.navigationController.loadViewController(
         { class: "NextViewController", id: "NextViewControllerUniqueID" },
-        [ { uri: "NextVC.js", id: "NextVCUniqueID"},
-          { uri: "NextView.js", id: "NextViewUniqueID"}
+        [ { uri: "NextVC.js", id: "NextViewController"},
+          { uri: "NextView.js", id: "NextView"}
         ], this);
 }
 ```
