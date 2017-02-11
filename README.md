@@ -2,13 +2,154 @@
 
 MentatJS is a javascript library for the creation of Single Page Applications.
 
-Features:
+### FEATURES:
 - No dependencies
 - No build steps
 - Module loading
 
+### BUILDING BLOCKS
 
-GET STARTED
+##### OVERVIEW
+
+MentatJS.View, MentatJS.ViewController, MentatJS.Application, MentatJS.NavigationController are the building blocks of a SPA built with MentatJS
+
+On startup, an Application object is instantiated and a root View is created and attached to the body of the web page.<br/>
+A root NavigationController object then takes charge of loading and presenting View Controllers into that root View.<br/>
+
+
+
+##### THE VIEW OBJECT
+The View object is the simplest component. It creates a HTML DIV element when initialised.<br/>
+Labels, Buttons, ListView all inherit View properties and functions.
+```javascript
+MyView = MentatJS.View.extend({
+
+});
+
+````
+Extensibility is done by overriding functions:<br/>
+```javascript
+viewWillLoad: function () {
+    // called after the div element is created
+    this.getDiv().style.backgroundColor = "red";
+},
+viewDidLoad: function () {
+    // called after viewWillLoad
+},
+viewWasAttached: function () {
+    // called after the view is attached ( the div element is now on the DOM )
+}
+````
+
+A view position on the page can be set by overriding the boundsForView:<br/>
+```javascript
+boundsForView: function (parentBounds) {
+    return {
+        x: 10,
+        y: 10,
+        width: 300,
+        height: 200,
+        unit: "px",
+        position: "absolute"
+    };
+}
+```
+the function is called automatically after the view is attached and the result is stored in the property bounds
+<br/>
+<br/>
+A view when added as a subview is initialised in this manner :
+```javascript
+var myView = new MyView();
+myView.initView('some_unique_id');
+```
+and attached to its parent view this way:
+```javascript
+this.attach(myView);
+```
+
+
+View can contains other views:
+```javascript
+viewWasAttached: function () {
+    this.myButton = new MentatJS.Button();
+    this.myButton.boundsForView = function (parentBounds) {
+        return {
+            x: 10,
+            y: 10,
+            width: 150,
+            height: 30,
+            unit: "px",
+            position: "absolute"
+        };
+    };
+    this.myButton.text = "CLICK ME";
+    this.myButton.initView(this.id + ".myButton");
+    this.attach(this.myButton);
+}
+````
+
+##### THE VIEW CONTROLLER OBJECT
+
+The View Controller object is used to answer to user events ( clicks or taps )<br/>
+```javascript
+MyViewController = MentatJS.ViewController.extend({
+
+    viewForViewController: function () {
+        return new MyView();
+    },
+
+    viewWasPresented: function () {
+        this.view.myButton.setActionDelegate(this, 'onButtonClicked');
+    },
+
+    onButtonClicked: function (sender) {
+        window.alert('Button was clicked');
+    }
+
+});
+```
+
+When the view controller is initialised by the navigation controller, the function viewForViewController is called to instantiate the view that will be added to the root view.
+<br/>
+```javascript
+viewForViewController: function () {
+    return new MyView();
+},
+```
+Once the view is initialised and attach to the root view, we can now hook up actions and set content dynamically:
+```javascript
+viewWasPresented: function () {
+    this.view.myButton.setActionDelegate(this, 'onButtonClicked');
+},
+```
+
+#### THE NAVIGATION CONTROLLER OBJECT
+
+The NavigationController object loads and presents view controllers on the root view it is managing.
+
+you can call the navigation controller on a view controller to load a different view controller and push it to the screen.
+
+```javascript
+onButtonClicked: function (sender) {
+    this.navigationController.loadViewController(
+        { class: "NextViewController", id: "NextViewControllerUniqueID" },
+        [ { uri: "NextVC.js", id: "NextVCUniqueID"},
+          { uri: "NextView.js", id: "NextViewUniqueID"}
+        ], this);
+}
+```
+
+the js files are loaded asynchronously and the function viewControllerWasLoadedSuccessfully is called, to give us a chance to pass data between view controllers.
+<br/>
+```javascript
+viewControllerWasLoadedSuccessfully : function (vc) {
+    vc.some_data_to_pass_along = this.some_data_we_want_to_keep;
+    this.navigationController.present(vc, {animated: true});
+}
+```
+
+
+### GET STARTED
 
 1. MyApplication
 
