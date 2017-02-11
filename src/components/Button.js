@@ -31,10 +31,10 @@ MentatJS.Button = MentatJS.View.extend({
             this._div.style.background = this.tint.background;
             this._div.style.color = this.tint.text;
             this._div.style.border = '1px solid ' + this.tint.normal;
-            this._div.style.borderRadius = '3px';
+            this._div.style.borderRadius = '15px';
             this._div.style.height = '30px';
             this._div.style.fontWeight = 'normal';
-            this._div.style.fontFamily = 'FontAwesome,brandon-grotesque';
+            this._div.style.fontFamily = 'FontAwesome,robotoblack';
             this._div.value = this.text;
             this._div.innerHTML = this.text;
 
@@ -65,6 +65,7 @@ MentatJS.Button = MentatJS.View.extend({
                 this.resize(newBounds);
                 this.oldBounds = this.bounds;
                 this.bounds = newBounds;
+                this.getDiv().style.borderRadius = (this.bounds.height/2)  + this.bounds.unit;
             }
         }
 
@@ -117,7 +118,7 @@ MentatJS.Button = MentatJS.View.extend({
             this.oldTint = this.tint;
             this.tint = MentatJS.tints.kDisabledTint;
             var ptr = this;
-            removeListener(this._div,'click',this.onClickEvent);
+            this._div.removeEventListener('click',this.onClickEvent);
         } else {
             this.isEnabled = true;
             if ((this.isToggle) && (this.isToggled) ) {
@@ -131,7 +132,7 @@ MentatJS.Button = MentatJS.View.extend({
             }
             this.tint = this.oldTint;
             var ptr = this;
-            addListener(this._div, 'click', this.onClickEvent);
+            this._div.addEventListener('click', this.onClickEvent);
         }
     },
 
@@ -145,30 +146,29 @@ MentatJS.Button = MentatJS.View.extend({
             var event_param = {
                 button_id: this.id
             };
-            FrameworkUI.Application.instance.session_event(FrameworkUI.kEvent_User,'UIButton.Click', event_param);
+            MentatJS.Application.instance.session_event(MentatJS.kEvent_User,'Button.Click', event_param);
             ptr.flash(function() {
                 if (ptr.isToggle) {
                     ptr.setToggled(!ptr.isToggled);
                 }
                 if (ptr.actionDelegate != null) {
-                    var str = 'ptr.actionDelegate.' + ptr.actionDelegateEventName + '(ptr,\'onclick\');';
-                    eval(str);
+                    ptr.actionDelegate[ptr.actionDelegateEventName](ptr,'onclick');
                 }
             });
         };
 
-        addListener(this._div, 'click', this.onClickEvent);
-        addListener(this._div, 'mouseover', function (e) {
+        this._div.addEventListener('click', this.onClickEvent);
+        this._div.addEventListener('mouseover', function (e) {
             this.style.cursor = 'pointer';
             if (ptr.isEnabled==true) {
                 ptr.getDiv().style.backgroundColor = ptr.tint.hover;
                 ptr.getDiv().style.color = ptr.tint.hovertext;
             } else {
-                ptr.getDiv().style.backgroundColor = FrameworkUI.kDisabledTint.hover;
-                ptr.getDiv().style.color = FrameworkUI.kDisabledTint.hovertext;
+                ptr.getDiv().style.backgroundColor = MentatJS.kDisabledTint.hover;
+                ptr.getDiv().style.color = MentatJS.kDisabledTint.hovertext;
             }
         });
-        addListener(this._div, 'mouseout', function (e) {
+        this._div.addEventListener('mouseout', function (e) {
             this.style.cursor = '';
             if (ptr.isEnabled==true) {
                 if ((ptr.isToggle) && (ptr.isToggled)) {
@@ -180,11 +180,11 @@ MentatJS.Button = MentatJS.View.extend({
                 }
             } else {
                 if ((ptr.isToggle) && (ptr.isToggled)) {
-                    ptr.getDiv().style.backgroundColor = FrameworkUI.kDisabledTint.toggled;
-                    ptr.getDiv().style.color = FrameworkUI.kDisabledTint.toggledtext;
+                    ptr.getDiv().style.backgroundColor = MentatJS.kDisabledTint.toggled;
+                    ptr.getDiv().style.color = MentatJS.kDisabledTint.toggledtext;
                 } else {
-                    ptr.getDiv().style.backgroundColor = FrameworkUI.kDisabledTint.background;
-                    ptr.getDiv().style.color = FrameworkUI.kDisabledTint.text;
+                    ptr.getDiv().style.backgroundColor = MentatJS.kDisabledTint.background;
+                    ptr.getDiv().style.color = MentatJS.kDisabledTint.text;
                 }
             }
         });

@@ -1,9 +1,30 @@
 
+MentatJS.DownloadWorkerBlobFunction = function () {
+
+    self.onmessage = function (event) {
+        var xmlHttpReq = new XMLHttpRequest();
+        console.log('uri is ' + event.data);
+        xmlHttpReq.open("GET", event.data, false);
+        xmlHttpReq.send(null);
+        self.postMessage(xmlHttpReq.responseText);
+    };
+
+}
+
+var code = MentatJS.DownloadWorkerBlobFunction.toString();
+code = code.substring(code.indexOf("{")+1, code.lastIndexOf("}"));
+
+MentatJS.DownloadWorkerBlob = new Blob( [code], { type: 'text/javascript'});
+MentatJS.DownloadWorkerURI = window.URL.createObjectURL(MentatJS.DownloadWorkerBlob);
+
+
+
+
 MentatJS.DownloadData = function (uri,callback,errorCallback) {
 
     if (!!window.Worker) {
 
-        var worker = new Worker("FrameworkUI/dev/Workers/Download.js");
+        var worker = new Worker(MentatJS.DownloadWorkerURI);
         worker.onmessage = function (event) {
             callback(event.data);
         };
@@ -60,7 +81,7 @@ MentatJS.DownloadDataWithDelegate = function (dataID, uri, delegate) {
 
     if (!!window.Worker) {
 
-        var worker = new Worker("FrameworkUI/dev/Workers/Download.js");
+        var worker = new Worker(MentatJS.DownloadWorkerURI);
         worker.onmessage = function (event) {
             delegate.dataWasDownloaded(dataID,event.data);
         };
@@ -118,7 +139,9 @@ MentatJS.LoadScript = function (dataID, uri) {
 MentatJS.declare = function (scriptID, fn) {
 
     fn();
-    MentatJS.Application.instance.downloadCache.push(scriptID);
+
+    MentatJS.Application.instance.cache( scriptID, { fn: fn });
+
 
     for ( var i = 0; i < MentatJS.Application.instance.downloadStack.length; i++) {
         var stack = MentatJS.Application.instance.downloadStack[i];

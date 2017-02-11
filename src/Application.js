@@ -1,3 +1,9 @@
+
+
+MentatJS.kEvent_Runtime = 0x00;
+MentatJS.kEvent_User = 0x01;
+
+
 MentatJS.Application = Class.extend ({
 
     navigationController : null,
@@ -6,6 +12,7 @@ MentatJS.Application = Class.extend ({
     rootView : null,
     downloadStack : null,
     downloadCache : null,
+
     
 
     resetNotification : function ()  {
@@ -63,8 +70,8 @@ MentatJS.Application = Class.extend ({
         this.rootView = new this.viewDeclaration();
         this.navigationController.initNavigationControllerWithRootView('UINavigationController.instance',this.rootView);
         this.navigationController.rootView.initView('rootView');
-        this.navigationController.rootView.doResize();
         document.getElementsByTagName('body')[0].appendChild(this.navigationController.rootView.getDiv());
+        this.navigationController.rootView.doResize();
         MentatJS.Application.instance = this;
         this.applicationWillStart();
     },
@@ -100,6 +107,50 @@ MentatJS.Application = Class.extend ({
                 this.notifications[i].target[notification](sender,param);
             }
         }
+    },
+
+
+    session_event: function (event_type, event_name, event_param) {
+
+        var id = generatev4UUID();
+
+        var event = {
+            id: id,
+            token: this.token,
+            app: this.appName,
+            type: event_type,
+            name: event_name,
+            params: event_param,
+            timestamp: new moment()
+        };
+
+        //var uri = this.baseAddress + "/sessionlogger/event/" + id;
+        //FrameworkUI.PostDataWithDelegate(id,uri,JSON.stringify(event),this);
+    },
+
+    cacheContains: function (cacheID) {
+        for (var i = 0; i < this.downloadCache.length; i++) {
+            if (this.downloadCache[i].id==cacheID)
+                return this.downloadCache[i];
+        }
+        return null;
+    },
+
+    cache : function (cacheID, object) {
+        var obj = object;
+        obj.id = cacheID;
+        obj.timestamp = + new Date();
+
+        // update if exists
+        for (var i = 0; i < this.downloadCache.length; i++) {
+            if (this.downloadCache[i].id==cacheID) {
+                this.downloadCache[i] = obj;
+                return;
+            }
+        }
+        this.downloadCache.push(obj);
+
+
     }
 
 

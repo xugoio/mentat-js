@@ -13,10 +13,11 @@ MentatJS.NavigationController = Class.extend({
     },
 
 
-    loadViewController : function ( vcID, arrayOfFilesToDownload, delegate ) {
+    loadViewController : function ( vcOpts, arrayOfFilesToDownload, delegate ) {
 
         var downloadStack = {
-            vcID: vcID,
+            vcClass: vcOpts.class,
+            vcID: vcOpts.id,
             counter: arrayOfFilesToDownload.length,
             files: [],
             navigationController: this,
@@ -28,7 +29,7 @@ MentatJS.NavigationController = Class.extend({
             
             var downloadID = arrayOfFilesToDownload[i].id;
 
-            if (!MentatJS.Application.instance.downloadCache.contains(downloadID)) {
+            if (!MentatJS.Application.instance.cacheContains(downloadID)) {
 
                 downloadStack.files.push(downloadID);
 
@@ -46,9 +47,9 @@ MentatJS.NavigationController = Class.extend({
 
     _initViewController : function (stack) {
         var newVC = null;
-        eval('newVC = new ' + stack.vcID + "();");
+        eval('newVC = new ' + stack.vcClass + "();");
         if (newVC==null) {
-            throw new Error('could not instantiate VC ' + stack.vcID);
+            throw new Error('could not instantiate VC ' + stack.vcClass);
             return;
         } else {
             console.log('+VC: ' + stack.vcID);
@@ -57,7 +58,7 @@ MentatJS.NavigationController = Class.extend({
         newVC.initViewController(stack.vcID);
         this.viewControllers.push(newVC);
         stack.delegate.viewControllerWasLoadedSuccessfully (newVC);
-        stack = { vcID: '', counter: 0, files:[], delegate: null};
+        stack = { vcClass: '', vcID: '', counter: 0, files:[], delegate: null};
     },
 
 
@@ -66,8 +67,7 @@ MentatJS.NavigationController = Class.extend({
 
         if (vcToRemove.view!=null) {
             if (this.rootView!=null) {
-                console.dir(vcToRemove.view);
-                console.dir(this.rootView);
+                
                 this.rootView.detach(vcToRemove.view.id);
             }
         }
@@ -82,6 +82,16 @@ MentatJS.NavigationController = Class.extend({
         }
     },
 
+    clear: function () {
+
+        while (this.viewControllers.length>0) {
+            var vc = this.viewControllers[this.viewControllers.length-1];
+            this.removeViewController(vc);
+        }
+
+    },
+
+
 
     present : function ( vc, options) {
 
@@ -91,7 +101,10 @@ MentatJS.NavigationController = Class.extend({
             duration: options.duration | 1300
         }
         // let the view prepare for the right bounds
+
         vc.viewWillBePresented(this.rootView.bounds);
+
+        vc.view.bounds = vc.view.boundsForView(this.rootView.bounds,null);
 
         this.rootView.attach(vc.view);
 
@@ -113,7 +126,7 @@ MentatJS.NavigationController = Class.extend({
         // ok we animate
         // from which direction is the new view coming ?
 
-        this.animation = new FrameworkUI.Animation();
+        this.animation = new MentatJS.Animation();
         this.animation.initWithDelegate(vc.id,this);
 
         for (var i = 0; i < this.viewControllers.length; i++) {
@@ -127,9 +140,9 @@ MentatJS.NavigationController = Class.extend({
                 aview = this.viewControllers[i].view;
             }
 
-            var animKey = new FrameworkUI.ViewAnimationKey();
+            var animKey = new MentatJS.ViewAnimationKey();
             animKey.view = aview;
-            animKey.easingFunction = FrameworkUI.Easing.easeOutCirc;
+            animKey.easingFunction = MentatJS.Easing.easeOutCirc;
             animKey.duration = 500;
             switch (opts.direction) {
                 case 'left':

@@ -11,8 +11,9 @@ MentatJS.Label = MentatJS.View.extend({
     fontColor : 'Black',
     textAlignment : 'left',
     fontWeight : '100',
+    fillLineHeight: false,
 
-    viewWillLoad : function () {
+    viewWasAttached : function () {
         this.refresh();
     },
 
@@ -24,6 +25,12 @@ MentatJS.Label = MentatJS.View.extend({
         this.getDiv().onclick = function (e) {
             this.uilabelRef.onLabelClicked(this,e);
         };
+        if (this.fillLineHeight === true) {
+
+            if (this.bounds!==null) {
+                this.getDiv().style.lineHeight = this.bounds.height + this.bounds.unit;
+            }
+        }
     },
 
     onLabelClicked : function (sender, param) {
@@ -45,3 +52,13 @@ MentatJS.Label = MentatJS.View.extend({
 
 
 });
+
+
+MentatJS.Label.labelFromLayout = function (parentView, elem_id, id) {
+    var ret = new MentatJS.Label();
+    var el = parentView.getDiv().querySelector("#" + elem_id);
+    ret.NO_RESIZE = true;
+    ret.initFromLayout(id,el);
+    parentView.attach(ret);
+    return ret;
+}

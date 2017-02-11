@@ -12,11 +12,11 @@ MyApp = MentatJS.Application.extend ({
 
     applicationWillStart : function () {
         this.navigationController.loadViewController(
-            { class: 'MyViewController', id: 'MyViewController' },
-        [
-            { id: 'MyView', uri:'myView.js'},
-            { id : "MyViewController", uri:'myViewController.js'}
-        ], this);
+            { class: 'MainViewController', id: 'MainViewController' },
+            [
+                { id: 'MainView', uri:'MainView.js'},
+                { id : "MainViewController", uri:'MainViewController.js'}
+            ], this);
 
     },
 
